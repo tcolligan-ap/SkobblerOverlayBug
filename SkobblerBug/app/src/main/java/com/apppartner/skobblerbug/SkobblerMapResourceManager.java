@@ -108,21 +108,18 @@ class SkobblerMapResourceManager implements SKMapsInitializationListener
         return mapCreatorFilePath;
     }
 
-    public void startMapResourceSetup()
+    public void startMapResourceSetup() throws SKDeveloperKeyException
     {
-        try
+        if (API_KEY.isEmpty())
         {
-
-            SKMapSurfaceView.preserveGLContext = false;
-            shouldUpdateSkobblerSdkAssets = AppCache.getSkobblerSdkVersion() != SKOBBLER_SDK_VERSION;
-
-            skMaps.setApiKey(API_KEY);
-            skMaps.initializeSKMaps(application, this);
+            throw new SKDeveloperKeyException();
         }
-        catch (SKDeveloperKeyException exception)
-        {
-            Log.e(TAG, exception.getMessage());
-        }
+
+        SKMapSurfaceView.preserveGLContext = false;
+        shouldUpdateSkobblerSdkAssets = AppCache.getSkobblerSdkVersion() != SKOBBLER_SDK_VERSION;
+
+        skMaps.setApiKey(API_KEY);
+        skMaps.initializeSKMaps(application, this);
     }
 
     //==============================================================================================
