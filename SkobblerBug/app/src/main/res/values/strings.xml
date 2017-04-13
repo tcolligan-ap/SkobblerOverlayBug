@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">SkobblerBug</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_map">MapActivity</string>
+    <string name="title_activity_map_fragment">MapFragmentActivity</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="skobbler_error_preparing_map_resources">Error preparing Skobbler Map Resources</string>
+</resources>
