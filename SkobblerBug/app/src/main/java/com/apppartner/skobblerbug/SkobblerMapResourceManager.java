@@ -95,6 +95,7 @@ class SkobblerMapResourceManager implements SKMapsInitializationListener
     {
         SKMaps.getInstance().destroySKMaps();
         didFinishSetup = false;
+        Log.d(TAG, "Destroying SKMaps");
     }
 
     public String getMapResourcesDirPath()
