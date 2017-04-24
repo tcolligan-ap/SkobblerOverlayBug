@@ -77,7 +77,7 @@ public class SplashActivity extends AppCompatActivity implements SkobblerMapReso
         }
         else
         {
-            startActivity(new Intent(this, MapActivity.class));
+            MapActivity.start(this);
         }
 
         finish();

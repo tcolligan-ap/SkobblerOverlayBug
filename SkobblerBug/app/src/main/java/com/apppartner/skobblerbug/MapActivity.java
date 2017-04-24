@@ -1,11 +1,14 @@
 package com.apppartner.skobblerbug;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.skobbler.ngx.map.SKAnnotation;
 import com.skobbler.ngx.map.SKCoordinateRegion;
@@ -24,9 +27,29 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
     // Class Properties
     //==============================================================================================
 
+    private static final String KEY_CHILD_ACTIVITY = "CHILD_ACTIVITY";
+
     private SKMapViewHolder mapViewHolder;
     private SKMapSurfaceView mapSurfaceView;
     private boolean didApply;
+    private boolean isChildActivity;
+
+    //==============================================================================================
+    // Static Methods
+    //==============================================================================================
+
+    public static void start(Context context)
+    {
+        Intent starter = new Intent(context, MapActivity.class);
+        context.startActivity(starter);
+    }
+
+    public static void startNoDestroy(Context context)
+    {
+        Intent starter = new Intent(context, MapActivity.class);
+        starter.putExtra(KEY_CHILD_ACTIVITY, true);
+        context.startActivity(starter);
+    }
 
     //==============================================================================================
     // Lifecycle Methods
@@ -41,28 +64,29 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
         mapViewHolder = (SKMapViewHolder)
                 findViewById(R.id.mapViewHolder);
         mapViewHolder.setMapSurfaceListener(this);
-    }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-        getMenuInflater().inflate(R.menu.menu_map, menu);
-        return true;
+        isChildActivity = getIntent().getBooleanExtra(KEY_CHILD_ACTIVITY, false);
+        ActionBar actionBar = getSupportActionBar();
+
+        if (isChildActivity && actionBar != null)
+        {
+            actionBar.setDisplayShowHomeEnabled(false);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings)
+        // Handle action bar actions click
+        switch (item.getItemId())
         {
-            startActivity(new Intent(this, SettingsActivity.class));
-            return true;
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -82,8 +106,21 @@ public class MapActivity extends AppCompatActivity implements SKMapSurfaceListen
     @Override
     protected void onDestroy()
     {
-        SkobblerMapResourceManager.getInstance().destroySKMaps();
+        if (!isChildActivity)
+        {
+            SkobblerMapResourceManager.getInstance().destroySKMaps();
+        }
+
         super.onDestroy();
+    }
+
+    //==============================================================================================
+    // Button Click Methods
+    //==============================================================================================
+
+    public void onAnotherMapButtonClicked(View v)
+    {
+        MapActivity.startNoDestroy(this);
     }
 
     //==============================================================================================
